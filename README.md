@@ -4,6 +4,10 @@
   <img src="frontend/public/logo.png" alt="Elevate Logo" width="480" />
   <p><strong>A Production-Ready Hyperlocal Event Discovery, Verified Attendance, and Community Engagement Platform</strong></p>
 
+  [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-innovators--gamma.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://innovators-gamma.vercel.app/)
+
+  <br />
+
   [![Vite](https://img.shields.io/badge/Frontend-React_19_+_Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
   [![Tailwind CSS](https://img.shields.io/badge/Styles-Tailwind_CSS_v3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
   [![Node.js](https://img.shields.io/badge/Backend-Node.js_+_Express-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -11,6 +15,9 @@
   [![MongoDB](https://img.shields.io/badge/Database-MongoDB_+_Mongoose-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
   [![Firebase](https://img.shields.io/badge/Auth-Firebase_+_Google_OAuth-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
   [![Render](https://img.shields.io/badge/Deployment-Render_+_Vercel-46E3B7?logo=render&logoColor=white)](https://render.com/)
+
+  <br />
+  <p>🔗 <strong>Live Production URL:</strong> <a href="https://innovators-gamma.vercel.app/">https://innovators-gamma.vercel.app/</a></p>
 </div>
 
 ---
@@ -231,6 +238,7 @@ The database automatically seeds 3 pre-configured user accounts accessible via o
 ## ☁️ Production Deployment
 
 ### Frontend (Vercel)
+- **Live URL**: [https://innovators-gamma.vercel.app/](https://innovators-gamma.vercel.app/)
 1. Import the repository into [Vercel](https://vercel.com).
 2. Set **Root Directory** to `frontend`.
 3. Add Environment Variable:
@@ -247,7 +255,7 @@ The database automatically seeds 3 pre-configured user accounts accessible via o
    - `PORT`: `10000`
    - `MONGODB_URI`: `mongodb+srv://<user>:<password>@cluster.mongodb.net/elevate`
    - `JWT_SECRET`: `your_random_32_character_secret`
-   - `FRONTEND_URL`: `https://your-project.vercel.app`
+   - `FRONTEND_URL`: `https://innovators-gamma.vercel.app`
 6. Deploy! Read [`RENDER_DEPLOYMENT.md`](./RENDER_DEPLOYMENT.md) for full details.
 
 ---
