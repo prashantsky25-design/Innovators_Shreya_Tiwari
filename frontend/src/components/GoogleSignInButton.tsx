@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api.js';
 import { useAuth } from '../context/AuthContext.js';
+import { signInWithFirebaseGoogle, isFirebaseConfigured } from '../services/firebase.js';
 import { X, Sparkles, Check, ArrowRight, UserCheck, Briefcase } from 'lucide-react';
 
 interface GoogleSignInButtonProps {
@@ -82,16 +83,50 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     }
   }, [selectedRole]);
 
-  const handleGoogleClick = () => {
-    // If standard Google GIS is loaded and configured, we can trigger prompt
+  const handleGoogleClick = async () => {
+    // 1. If Firebase Auth is configured, use native Firebase Google Popup
+    if (isFirebaseConfigured) {
+      setLoading(true);
+      setErrorMessage('');
+      try {
+        const fbResult = await signInWithFirebaseGoogle();
+        if (fbResult.success && fbResult.email) {
+          const res = await api.googleAuth({
+            email: fbResult.email,
+            name: fbResult.name,
+            avatarUrl: fbResult.avatarUrl,
+            googleId: fbResult.uid,
+            credential: fbResult.idToken,
+            role: selectedRole,
+          });
+
+          if (res.success) {
+            login(res.token, res.user);
+            if (onSuccess) onSuccess();
+            navigate(res.user.role === 'organizer' ? '/organizer/dashboard' : '/participant/dashboard');
+            return;
+          }
+        } else if (fbResult.error) {
+          setErrorMessage(fbResult.error);
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Firebase Google Sign-In failed');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // 2. If Google GIS client ID is loaded, trigger GIS prompt
     const googleClientId = (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID;
     if (googleClientId && (window as any).google?.accounts?.id) {
       (window as any).google.accounts.id.prompt();
-    } else {
-      // Interactive Google Account picker modal for dev / production-ready demo
-      setShowChooserModal(true);
-      setErrorMessage('');
+      return;
     }
+
+    // 3. Built-in interactive account picker for development/demo mode
+    setShowChooserModal(true);
+    setErrorMessage('');
   };
 
   const handleAccountSelect = async (account: { name: string; email: string; avatar?: string }) => {
