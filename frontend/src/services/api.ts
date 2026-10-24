@@ -1,4 +1,5 @@
-const API_BASE = '/api';
+const envApiUrl = (import.meta as any).env?.VITE_API_URL?.replace(/\/+$/, '');
+const API_BASE = envApiUrl ? `${envApiUrl}/api` : '/api';
 
 export const getAuthToken = (): string | null => {
   return localStorage.getItem('eventsphere_token');

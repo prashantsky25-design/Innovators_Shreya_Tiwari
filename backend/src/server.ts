@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
+import fs from 'fs';
 import { config } from './config/env.js';
 import { connectDB } from './config/db.js';
 import { initQueue, EventJobPayload } from './config/queue.js';
@@ -26,6 +27,7 @@ const app = express();
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: false, // Allows OpenStreetMap tiles, fonts, and inline styles in production
   })
 );
 app.use(cors({ origin: true, credentials: true }));
@@ -34,7 +36,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('dev'));
 
 // Static file serving for uploads (Certificates, Covers, Photos)
-app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
+const uploadsDir = path.resolve(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Background Job Worker Processor
 const handleBackgroundJob = async (job: { id: string; name: string; data: EventJobPayload }) => {
@@ -71,10 +77,31 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'EventSphere Hyperlocal API',
+    service: 'Elevate Hyperlocal API',
     version: '1.0.0',
   });
 });
+
+// Production Frontend Static Asset Serving (Single-Service Deployment on Render)
+const potentialDistPaths = [
+  path.resolve(process.cwd(), 'frontend/dist'),
+  path.resolve(process.cwd(), '../frontend/dist'),
+  path.resolve(__dirname, '../../frontend/dist'),
+  path.resolve(__dirname, '../frontend/dist'),
+];
+
+const distPath = potentialDistPaths.find((p) => fs.existsSync(p));
+
+if (distPath) {
+  console.log(`📦 Serving production frontend assets from: ${distPath}`);
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 // Centralized Error Handling
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -91,9 +118,9 @@ const startServer = async () => {
     await seedInitialData();
     await initQueue(handleBackgroundJob);
 
-    app.listen(config.port, () => {
+    app.listen(config.port, '0.0.0.0', () => {
       console.log(`=======================================================`);
-      console.log(`🚀 EventSphere Server active on: http://localhost:${config.port}`);
+      console.log(`🚀 Elevate Server active on port: ${config.port}`);
       console.log(`📡 Health Check: http://localhost:${config.port}/api/health`);
       console.log(`=======================================================`);
     });

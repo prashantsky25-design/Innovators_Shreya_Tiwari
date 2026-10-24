@@ -1,24 +1,25 @@
 {
-  "name": "eventsphere-monorepo",
+  "name": "elevate-monorepo",
   "version": "1.0.0",
-  "description": "EventSphere - Hyperlocal Event Discovery & Community Engagement",
+  "description": "Elevate - From Connections to Creations",
   "scripts": {
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
+    "render-build": "npm run install:all && npm run build:backend && npm run build:frontend",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "build": "npm run build:backend && npm run build:frontend",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "build": "npm run build:backend && npm run build:frontend",
+    "start": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
     "seed": "cd backend && npm run seed"
   },
   "keywords": [
-    "eventsphere",
+    "elevate",
     "hyperlocal",
     "mern",
-    "qr-attendance",
-    "certificates",
-    "gamification",
-    "eventcoins"
+    "events",
+    "render"
   ],
-  "author": "Antigravity Senior Full-Stack Architect",
+  "author": "Elevate Development Team",
   "license": "ISC"
 }
