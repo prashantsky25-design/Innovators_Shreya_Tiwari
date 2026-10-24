@@ -36,7 +36,7 @@ export const VerifyCertificate: React.FC = () => {
           Certificate Verification
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Official EventSphere Hyperlocal Cryptographic Verification Registry
+          Official Elevate Hyperlocal Cryptographic Verification Registry
         </p>
       </div>
 
@@ -61,7 +61,7 @@ export const VerifyCertificate: React.FC = () => {
                 Official & Verified Certificate
               </div>
               <div className="text-xs text-emerald-600 dark:text-emerald-400">
-                Issued by EventSphere with server-validated attendance timestamp.
+                Issued by Elevate with server-validated attendance timestamp.
               </div>
             </div>
           </div>

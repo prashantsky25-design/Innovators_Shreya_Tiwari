@@ -15,6 +15,7 @@ import { LeaderboardPage } from './pages/public/LeaderboardPage.js';
 import { VerifyCertificate } from './pages/public/VerifyCertificate.js';
 import { Login } from './pages/public/Login.js';
 import { Signup } from './pages/public/Signup.js';
+import { ResetPasswordPage } from './pages/public/ResetPasswordPage.js';
 
 // Participant Pages
 import { ParticipantDashboard } from './pages/participant/ParticipantDashboard.js';
@@ -69,7 +70,7 @@ export const App: React.FC = () => {
         <Router>
           <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors">
             <Navbar />
-            <main className="flex-1">
+            <main className="flex-1 pb-24 md:pb-0">
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
@@ -80,6 +81,7 @@ export const App: React.FC = () => {
                 <Route path="/certificates/verify/:certificateId" element={<VerifyCertificate />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
                 {/* Participant Protected Routes */}
                 <Route
@@ -150,6 +152,14 @@ export const App: React.FC = () => {
                 />
                 <Route
                   path="/organizer/events/new"
+                  element={
+                    <ProtectedRoute allowedRoles={['organizer', 'admin']}>
+                      <CreateEditEventPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/organizer/events/:id/edit"
                   element={
                     <ProtectedRoute allowedRoles={['organizer', 'admin']}>
                       <CreateEditEventPage />

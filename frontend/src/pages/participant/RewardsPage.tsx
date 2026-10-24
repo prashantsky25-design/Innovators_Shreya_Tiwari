@@ -50,14 +50,14 @@ export const RewardsPage: React.FC = () => {
               <Sparkles className="w-4 h-4" />
               EventCoins Virtual Economy Wallet
             </div>
-            <div className="flex items-baseline gap-3">
-              <span className="text-4xl sm:text-5xl font-black">{data?.balance || 0}</span>
-              <span className="text-lg font-bold text-amber-100">EventCoins Available</span>
+            <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
+              <span className="text-3xl sm:text-5xl font-black">{data?.balance || 0}</span>
+              <span className="text-sm sm:text-lg font-bold text-amber-100">EventCoins Available</span>
             </div>
           </div>
 
           {/* Level Badge */}
-          <div className="px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-center sm:text-right">
+          <div className="w-full sm:w-auto px-4 py-3 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 text-left sm:text-right">
             <div className="text-[10px] text-amber-100 uppercase font-semibold">Current Tier</div>
             <div className="text-base font-extrabold flex items-center gap-1.5 justify-center sm:justify-end">
               <span>{data?.levelBadge}</span>

@@ -9,6 +9,8 @@ export const config = {
   mongoUri: process.env.MONGODB_URI || '',
   jwtSecret: process.env.JWT_SECRET || 'eventsphere_super_secret_jwt_key_2026_dev',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
   redisUrl: process.env.REDIS_URL || '',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   smtp: {

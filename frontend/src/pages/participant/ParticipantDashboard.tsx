@@ -69,7 +69,7 @@ export const ParticipantDashboard: React.FC = () => {
         {/* Attendance Counter Button */}
         <Link
           to="/participant/history"
-          className="group px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 transition-all text-center sm:text-right"
+          className="w-full md:w-auto group px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 transition-all text-center sm:text-right"
         >
           <div className="text-xs text-indigo-200 uppercase tracking-wider font-semibold">
             Verified Events Attended

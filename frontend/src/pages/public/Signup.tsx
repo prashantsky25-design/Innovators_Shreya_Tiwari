@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api.js';
 import { useAuth } from '../../context/AuthContext.js';
 import { UserPlus, UserCheck, Briefcase, Mail, Key, User, ShieldAlert } from 'lucide-react';
+import { GoogleSignInButton } from '../../components/GoogleSignInButton.js';
 
 export const Signup: React.FC = () => {
   const [role, setRole] = useState<'participant' | 'organizer'>('participant');
@@ -45,46 +46,71 @@ export const Signup: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16 space-y-8">
-      <div className="text-center space-y-2">
-        <div className="inline-flex p-3 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-1">
-          <UserPlus className="w-6 h-6" />
+    <div className="max-w-md mx-auto px-4 py-12 sm:py-16 space-y-6">
+      <div className="text-center space-y-4">
+        <Link to="/" className="inline-block group">
+          <div className="inline-flex p-3 sm:p-4 rounded-3xl bg-white dark:bg-white shadow-lg border border-slate-200/90 dark:border-slate-700/80 group-hover:scale-105 transition-transform">
+            <img src="/logo.png" alt="Elevate" className="h-16 sm:h-20 w-auto object-contain" />
+          </div>
+        </Link>
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Join Elevate
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Select your role and start discovering or hosting hyperlocal events
+          </p>
         </div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Join EventSphere
-        </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Select your primary role to customize your hyperlocal experience
-        </p>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
         {/* Role Selector Tabs */}
-        <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
-          <button
-            type="button"
-            onClick={() => setRole('participant')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl transition-all ${
-              role === 'participant'
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-xs'
-                : 'text-slate-600 dark:text-slate-400'
-            }`}
-          >
-            <UserCheck className="w-4 h-4" />
-            Participant
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole('organizer')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl transition-all ${
-              role === 'organizer'
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-xs'
-                : 'text-slate-600 dark:text-slate-400'
-            }`}
-          >
-            <Briefcase className="w-4 h-4" />
-            Organizer
-          </button>
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">
+            Primary Role
+          </label>
+          <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setRole('participant')}
+              className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl transition-all cursor-pointer ${
+                role === 'participant'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <UserCheck className="w-4 h-4" />
+              Participant
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('organizer')}
+              className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl transition-all cursor-pointer ${
+                role === 'organizer'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400'
+              }`}
+            >
+              <Briefcase className="w-4 h-4" />
+              Organizer
+            </button>
+          </div>
+        </div>
+
+        {/* Continue with Google */}
+        <div className="space-y-3">
+          <GoogleSignInButton
+            role={role}
+            text={`Sign up with Google as ${role === 'organizer' ? 'Organizer' : 'Participant'}`}
+          />
+
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
+            <span className="bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 shrink-0">
+              or register with email
+            </span>
+            <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
+          </div>
         </div>
 
         {error && (
@@ -139,7 +165,7 @@ export const Signup: React.FC = () => {
                 type="text"
                 value={organization}
                 onChange={(e) => setOrganization(e.target.value)}
-                placeholder={role === 'organizer' ? 'e.g. TechInnovate Lab' : 'e.g. National Institute of Tech'}
+                placeholder="e.g. Innovators University or Tech Community"
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"
               />
             </div>
@@ -147,16 +173,17 @@ export const Signup: React.FC = () => {
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Password
+              Password (min 6 characters)
             </label>
             <div className="relative">
               <Key className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 required
+                minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimum 6 characters"
+                placeholder="••••••••"
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"
               />
             </div>
@@ -165,16 +192,16 @@ export const Signup: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all"
+            className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
           >
-            {loading ? 'Creating Account...' : `Register as ${role === 'organizer' ? 'Organizer' : 'Participant'}`}
+            {loading ? 'Creating Account...' : `Sign Up as ${role === 'organizer' ? 'Organizer' : 'Participant'}`}
           </button>
         </form>
 
-        <div className="text-center text-xs text-slate-500 dark:text-slate-400">
+        <div className="text-center text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
           Already have an account?{' '}
           <Link to="/login" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
-            Sign In
+            Sign in
           </Link>
         </div>
       </div>

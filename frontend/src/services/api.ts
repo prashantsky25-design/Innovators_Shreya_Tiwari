@@ -43,6 +43,14 @@ export const api = {
   // Auth
   register: (body: any) => apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
   login: (body: any) => apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
+  googleAuth: (body: { credential?: string; email?: string; name?: string; avatarUrl?: string; googleId?: string; role?: string }) =>
+    apiFetch('/auth/google', { method: 'POST', body: JSON.stringify(body) }),
+  forgotPassword: (body: { email: string }) =>
+    apiFetch('/auth/forgot-password', { method: 'POST', body: JSON.stringify(body) }),
+  resetPassword: (body: { token: string; email: string; newPassword: string }) =>
+    apiFetch('/auth/reset-password', { method: 'POST', body: JSON.stringify(body) }),
+  changePassword: (body: { currentPassword?: string; newPassword: string }) =>
+    apiFetch('/auth/change-password', { method: 'POST', body: JSON.stringify(body) }),
   getMe: () => apiFetch('/auth/me'),
   updateProfile: (body: any) => apiFetch('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
 

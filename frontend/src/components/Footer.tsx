@@ -9,13 +9,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand info */}
           <div className="space-y-4 md:col-span-2">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
-                ES
-              </div>
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
-                EventSphere
-              </span>
+            <div className="inline-flex h-14 sm:h-16 px-3 py-1.5 rounded-2xl bg-white dark:bg-white shadow-sm border border-slate-200 dark:border-slate-700 items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="Elevate — From Connections to Creations"
+                className="h-10 sm:h-12 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
               Hyperlocal event discovery, verified QR attendance, automated certificates, and community gamification platform built for modern creators, developers, and local builders.
@@ -55,7 +54,7 @@ export const Footer: React.FC = () => {
 
         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-500">
           <div>
-            © {new Date().getFullYear()} EventSphere Inc. All rights reserved.
+            © {new Date().getFullYear()} Elevate. All rights reserved.
           </div>
           <div className="flex items-center gap-1">
             Built with <Heart className="w-3.5 h-3.5 text-red-500 inline fill-red-500" /> for the Hyperlocal Community

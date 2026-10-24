@@ -136,7 +136,7 @@ export const ExploreEvents: React.FC = () => {
       {/* Filter Chips & View Mode Controls */}
       <div className="space-y-4 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
         {/* Domain Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
           <button
             onClick={() => setSelectedDomain('All')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all ${
@@ -163,10 +163,10 @@ export const ExploreEvents: React.FC = () => {
         </div>
 
         {/* Secondary Filters Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
           {/* Date & Price Selectors */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg overflow-x-auto max-w-full">
               <button
                 onClick={() => setDateFilter('upcoming')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-all ${
@@ -201,7 +201,7 @@ export const ExploreEvents: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
               <button
                 onClick={() => setPriceType('all')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-all ${
@@ -230,32 +230,34 @@ export const ExploreEvents: React.FC = () => {
           </div>
 
           {/* Location Radius & View Mode Switcher */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={requestUserLocation}
-              disabled={isLocating}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-medium transition-colors ${
-                userLocation
-                  ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300'
-                  : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-              }`}
-            >
-              <Navigation className="w-3.5 h-3.5" />
-              <span>{isLocating ? 'Locating...' : userLocation ? `Nearby (${radiusKm} km)` : 'Near Me'}</span>
-            </button>
+          <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={requestUserLocation}
+                disabled={isLocating}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-medium transition-colors ${
+                  userLocation
+                    ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300'
+                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Navigation className="w-3.5 h-3.5" />
+                <span>{isLocating ? 'Locating...' : userLocation ? `Nearby (${radiusKm} km)` : 'Near Me'}</span>
+              </button>
 
-            {userLocation && (
-              <input
-                type="range"
-                min="5"
-                max="50"
-                step="5"
-                value={radiusKm}
-                onChange={(e) => setRadiusKm(parseInt(e.target.value, 10))}
-                title={`Radius: ${radiusKm}km`}
-                className="w-20 accent-indigo-600"
-              />
-            )}
+              {userLocation && (
+                <input
+                  type="range"
+                  min="5"
+                  max="50"
+                  step="5"
+                  value={radiusKm}
+                  onChange={(e) => setRadiusKm(parseInt(e.target.value, 10))}
+                  title={`Radius: ${radiusKm}km`}
+                  className="w-16 sm:w-20 accent-indigo-600"
+                />
+              )}
+            </div>
 
             {/* View Mode Toggle */}
             <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">

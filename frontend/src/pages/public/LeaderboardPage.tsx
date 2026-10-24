@@ -83,16 +83,16 @@ export const LeaderboardPage: React.FC = () => {
                         {item.name.charAt(0)}
                       </div>
                     )}
-                    <div>
+                    <div className="min-w-0">
                       <div className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                        <span>{item.name}</span>
+                        <span className="truncate max-w-[110px] xs:max-w-[150px] sm:max-w-none">{item.name}</span>
                         {item.isCurrentUser && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 font-semibold">
+                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 font-semibold shrink-0">
                             You
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">
                         {item.organization || 'Independent Builder'}
                       </div>
                     </div>

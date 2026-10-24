@@ -18,6 +18,7 @@ import {
   QrCode,
   ArrowLeft,
   X,
+  Edit3,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -116,22 +117,34 @@ export const EventDetail: React.FC = () => {
       </Link>
 
       {/* Hero Cover Banner */}
-      <div className="relative rounded-3xl overflow-hidden aspect-[21/9] bg-slate-900 shadow-lg">
+      <div className="relative rounded-3xl overflow-hidden aspect-[4/3] sm:aspect-[21/9] min-h-[300px] sm:min-h-[340px] bg-slate-900 shadow-lg">
         <img src={event.coverImage} alt={event.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
 
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wide shadow-md">
+        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex flex-wrap gap-2">
+          <span className="px-2.5 sm:px-3 py-1 rounded-full bg-indigo-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wide shadow-md">
             {event.domain}
           </span>
           {event.isFeatured && (
-            <span className="px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-bold uppercase tracking-wide shadow-md">
+            <span className="px-2.5 sm:px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] sm:text-xs font-bold uppercase tracking-wide shadow-md">
               Featured
             </span>
           )}
         </div>
 
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex items-center gap-1.5 sm:gap-2">
+          {user &&
+            ((event.organizerId as any)?._id === user.id ||
+              (event.organizerId as any) === user.id ||
+              user.role === 'admin') && (
+              <Link
+                to={`/organizer/events/${event._id}/edit`}
+                className="px-2.5 sm:px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white backdrop-blur-md text-[11px] sm:text-xs font-bold inline-flex items-center gap-1.5 border border-white/20 transition-all shadow-md"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden xs:inline">Edit Event</span>
+              </Link>
+            )}
           <button
             onClick={() => {
               if (navigator.share) {
@@ -141,20 +154,20 @@ export const EventDetail: React.FC = () => {
                 alert('Event link copied to clipboard!');
               }
             }}
-            className="p-2.5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-md transition-colors"
+            className="p-2 sm:p-2.5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-md transition-colors"
             title="Share Event"
           >
-            <Share2 className="w-4 h-4" />
+            <Share2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
           </button>
         </div>
 
-        <div className="absolute bottom-6 left-6 right-6 text-white space-y-2">
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight drop-shadow-md">
+        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white space-y-2">
+          <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight drop-shadow-md">
             {event.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-300">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-slate-300">
             <span className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-indigo-400" />
+              <Calendar className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-indigo-400" />
               {new Date(event.startDate).toLocaleDateString('en-US', {
                 weekday: 'short',
                 month: 'short',
@@ -164,13 +177,13 @@ export const EventDetail: React.FC = () => {
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-indigo-400" />
+              <Clock className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-indigo-400" />
               {new Date(event.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-red-400" />
-              {event.venueName}
+              <MapPin className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-red-400" />
+              <span className="truncate max-w-[160px] sm:max-w-none">{event.venueName}</span>
             </span>
           </div>
         </div>

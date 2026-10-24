@@ -11,6 +11,7 @@ export interface User {
   eventsAttendedCount: number;
   badges: string[];
   isLeaderboardOptedIn?: boolean;
+  authProvider?: 'local' | 'google';
 }
 
 export interface EventItem {

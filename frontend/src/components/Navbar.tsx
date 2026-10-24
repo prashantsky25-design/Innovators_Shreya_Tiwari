@@ -36,25 +36,15 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 p-0.5 flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <svg className="w-6 h-6 text-indigo-400" viewBox="0 0 48 48" fill="none">
-                  <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="3" strokeDasharray="4 2" />
-                  <circle cx="24" cy="24" r="14" fill="#6366f1" />
-                  <path d="M24 16C21.79 16 20 17.79 20 20C20 23 24 28 24 28C24 28 28 23 28 20C28 17.79 26.21 16 24 16Z" fill="#ffffff"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 bg-clip-text text-transparent">
-                EventSphere
-              </span>
-              <span className="hidden sm:inline-block ml-2 text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300">
-                Hyperlocal
-              </span>
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          {/* Brand Logo - Large and Clean */}
+          <Link to="/" className="flex items-center group py-1">
+            <div className="h-12 sm:h-16 px-2.5 sm:px-3 py-1 rounded-2xl bg-white dark:bg-white shadow-sm border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-center group-hover:scale-105 transition-all">
+              <img
+                src="/logo.png"
+                alt="Elevate — From Connections to Creations"
+                className="h-9 sm:h-13 w-auto object-contain"
+              />
             </div>
           </Link>
 
@@ -130,7 +120,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Right Action Icons & Auth Profile */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -141,8 +131,8 @@ export const Navbar: React.FC = () => {
             </button>
 
             {user ? (
-              <div className="flex items-center gap-3">
-                {/* EventCoins Pill */}
+              <div className="flex items-center gap-1.5 sm:gap-3">
+                {/* EventCoins Pill (Desktop & Tablet) */}
                 <Link
                   to="/participant/rewards"
                   className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold shadow-sm"
@@ -164,7 +154,7 @@ export const Navbar: React.FC = () => {
                 {/* User Dropdown / Profile pill */}
                 <Link
                   to={user.role === 'organizer' ? '/organizer/dashboard' : '/participant/dashboard'}
-                  className="flex items-center gap-2 p-1 pl-2 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 hover:border-indigo-400 transition-colors"
+                  className="flex items-center gap-2 p-1 sm:pl-2 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 hover:border-indigo-400 transition-colors"
                 >
                   <div className="text-left hidden lg:block pr-1">
                     <div className="text-xs font-semibold text-slate-900 dark:text-slate-100 line-clamp-1">{user.name}</div>
@@ -179,26 +169,27 @@ export const Navbar: React.FC = () => {
                   )}
                 </Link>
 
+                {/* Sign out button (hidden on mobile, present in drawer) */}
                 <button
                   onClick={handleLogout}
                   title="Sign Out"
                   aria-label="Sign out"
-                  className="p-2 text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                  className="hidden sm:block p-2 text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <Link
                   to="/login"
-                  className="px-3.5 py-1.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="px-2.5 sm:px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-4 py-1.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm shadow-indigo-600/20 transition-all"
+                  className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm shadow-indigo-600/20 transition-all"
                 >
                   Get Started
                 </Link>
@@ -208,7 +199,8 @@ export const Navbar: React.FC = () => {
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              aria-label="Toggle menu"
+              className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -238,6 +230,32 @@ export const Navbar: React.FC = () => {
 
           {user && (
             <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
+              {/* Mobile User Profile Summary Card */}
+              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-sm flex items-center justify-center">
+                      {user.name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">{user.name}</div>
+                    <div className="text-[11px] text-slate-500 capitalize">{user.role} • {user.organization || 'Member'}</div>
+                  </div>
+                </div>
+
+                <Link
+                  to="/participant/rewards"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-extrabold shrink-0"
+                >
+                  <Coins className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{user.eventCoinsBalance}</span>
+                </Link>
+              </div>
+
               <Link
                 to={user.role === 'organizer' ? '/organizer/dashboard' : '/participant/dashboard'}
                 onClick={() => setMobileMenuOpen(false)}

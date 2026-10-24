@@ -40,12 +40,25 @@ export const LandingPage: React.FC = () => {
   return (
     <div className="space-y-20 pb-16">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 border-b border-slate-200/60 dark:border-slate-800/60 bg-gradient-to-b from-indigo-50/40 via-transparent to-transparent dark:from-indigo-950/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      <section className="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-24 border-b border-slate-200/60 dark:border-slate-800/60 bg-gradient-to-b from-indigo-50/40 via-transparent to-transparent dark:from-indigo-950/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+          {/* Large Hero Logo Showcase */}
+          <div className="flex items-center justify-center">
+            <div className="p-3 sm:p-5 rounded-3xl bg-white dark:bg-white shadow-xl border border-slate-200/90 dark:border-slate-700/80 inline-flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="Elevate — From Connections to Creations"
+                className="h-20 sm:h-28 md:h-32 w-auto object-contain"
+              />
+            </div>
+          </div>
+
           {/* Top Hyperlocal Node Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold animate-pulse">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Hyperlocal Discovery & Community Engagement Engine</span>
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>From Connections to Creations • Hyperlocal Discovery Engine</span>
+            </div>
           </div>
 
           {/* Main Headline */}
@@ -212,7 +225,7 @@ export const LandingPage: React.FC = () => {
             End-to-End Workflow
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-            How EventSphere Works
+            How Elevate Works
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400">
             From discovering events to unlocking milestone badges in 4 seamless steps.

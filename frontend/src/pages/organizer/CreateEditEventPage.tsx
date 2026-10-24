@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { api } from '../../services/api.js';
 import { MapPinPicker } from '../../components/MapPinPicker.js';
 import {
@@ -14,6 +14,8 @@ import {
   ChevronRight,
   ChevronLeft,
   Sparkles,
+  ArrowLeft,
+  Edit3,
 } from 'lucide-react';
 
 const DOMAIN_OPTIONS = [
@@ -32,11 +34,30 @@ const DOMAIN_OPTIONS = [
   'Community Meetups',
 ];
 
+// Helper to format ISO date to datetime-local input value
+const formatToDatetimeLocal = (isoString?: string) => {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return '';
+  const pad = (n: number) => (n < 10 ? '0' + n : n);
+  const YYYY = date.getFullYear();
+  const MM = pad(date.getMonth() + 1);
+  const DD = pad(date.getDate());
+  const hh = pad(date.getHours());
+  const mm = pad(date.getMinutes());
+  return `${YYYY}-${MM}-${DD}T${hh}:${mm}`;
+};
+
 export const CreateEditEventPage: React.FC = () => {
+  const { id } = useParams<{ id?: string }>();
+  const isEditMode = Boolean(id);
   const navigate = useNavigate();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(isEditMode);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   // Form States
   const [title, setTitle] = useState('');
@@ -58,7 +79,7 @@ export const CreateEditEventPage: React.FC = () => {
   const [venueName, setVenueName] = useState('Innovators Hub');
   const [address, setAddress] = useState('Sector 62, Noida, NCR, India');
   const [coords, setCoords] = useState<{ lat: number; lng: number }>({
-    lat: 28.6280,
+    lat: 28.628,
     lng: 77.3621,
   });
 
@@ -71,99 +92,230 @@ export const CreateEditEventPage: React.FC = () => {
   const [certificateEnabled, setCertificateEnabled] = useState(true);
   const [galleryEnabled, setGalleryEnabled] = useState(true);
 
+  // Pre-load event if in Edit Mode
+  useEffect(() => {
+    if (!id) return;
+
+    const loadEventData = async () => {
+      setFetching(true);
+      setError('');
+      try {
+        const res = await api.getEvent(id);
+        if (res.success && res.event) {
+          const ev = res.event;
+          setTitle(ev.title || '');
+          setDescription(ev.description || '');
+          setDomain(ev.domain || 'AI/ML');
+          setTags(Array.isArray(ev.tags) ? ev.tags.join(', ') : '');
+          setCoverImage(ev.coverImage || '');
+          setEligibility(ev.eligibility || 'Open to All');
+
+          setStartDate(formatToDatetimeLocal(ev.startDate));
+          setEndDate(formatToDatetimeLocal(ev.endDate));
+          setRegistrationDeadline(formatToDatetimeLocal(ev.registrationDeadline));
+          setTimezone(ev.timezone || 'Asia/Kolkata');
+
+          setVenueName(ev.venueName || '');
+          setAddress(ev.address || '');
+          if (ev.location?.coordinates && ev.location.coordinates.length === 2) {
+            setCoords({
+              lat: ev.location.coordinates[1],
+              lng: ev.location.coordinates[0],
+            });
+          }
+
+          setCapacity(String(ev.capacity || 100));
+          setPrice(String(ev.price || 0));
+          setInstructions(ev.instructions || '');
+          setCertificateEnabled(ev.certificateEnabled !== false);
+          setGalleryEnabled(ev.galleryEnabled !== false);
+        } else {
+          setError('Event not found or access denied.');
+        }
+      } catch (err: any) {
+        setError(err.message || 'Failed to load event data');
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    loadEventData();
+  }, [id]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    try {
-      const res = await api.createEvent({
-        title,
-        description,
-        domain,
-        tags: tags.split(',').map((t) => t.trim()),
-        coverImage,
-        eligibility,
-        startDate,
-        endDate,
-        registrationDeadline: registrationDeadline || startDate,
-        timezone,
-        venueName,
-        address,
-        latitude: coords.lat,
-        longitude: coords.lng,
-        capacity: parseInt(capacity, 10),
-        price: parseFloat(price) || 0,
-        instructions,
-        certificateEnabled,
-        galleryEnabled,
-        status: 'published',
-      });
+    const payload = {
+      title,
+      description,
+      domain,
+      tags: tags.split(',').map((t) => t.trim()),
+      coverImage,
+      eligibility,
+      startDate,
+      endDate,
+      registrationDeadline: registrationDeadline || startDate,
+      timezone,
+      venueName,
+      address,
+      latitude: coords.lat,
+      longitude: coords.lng,
+      capacity: parseInt(capacity, 10),
+      price: parseFloat(price) || 0,
+      instructions,
+      certificateEnabled,
+      galleryEnabled,
+      status: 'published',
+    };
 
-      if (res.success) {
-        navigate('/organizer/dashboard');
+    try {
+      if (isEditMode && id) {
+        const res = await api.updateEvent(id, payload);
+        if (res.success) {
+          setSuccessMsg('Event updated successfully!');
+          setTimeout(() => {
+            navigate('/organizer/dashboard');
+          }, 1200);
+        }
+      } else {
+        const res = await api.createEvent(payload);
+        if (res.success) {
+          navigate('/organizer/dashboard');
+        }
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to create event');
+      setError(err.message || 'Failed to save event');
     } finally {
       setLoading(false);
     }
   };
 
+  if (fetching) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-6 animate-pulse">
+        <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl w-1/3" />
+        <div className="h-64 bg-slate-200 dark:bg-slate-800 rounded-3xl" />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <Link
+        to="/organizer/dashboard"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Dashboard
+      </Link>
+
       <div className="space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Create New Hyperlocal Event
-        </h1>
+        <div className="flex items-center gap-2">
+          {isEditMode ? (
+            <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
+              <Edit3 className="w-5 h-5" />
+            </div>
+          ) : (
+            <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+              <Sparkles className="w-5 h-5" />
+            </div>
+          )}
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            {isEditMode ? 'Edit Hyperlocal Event' : 'Create New Hyperlocal Event'}
+          </h1>
+        </div>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Publish your event with map markers, automated QR tickets, and verified certificates
+          {isEditMode
+            ? 'Update event details, venue location pin, capacity, and settings.'
+            : 'Publish your event with map markers, automated QR tickets, and verified certificates.'}
         </p>
       </div>
 
-      {/* Multi-step Progress Bar */}
-      <div className="grid grid-cols-4 gap-2 text-center text-xs font-bold">
-        <div
-          className={`p-3 rounded-xl border transition-all ${
-            currentStep >= 1
-              ? 'bg-indigo-600 text-white border-indigo-600'
+      {/* Mobile Step Indicator */}
+      <div className="sm:hidden p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+          <span>Step {currentStep} of 4</span>
+          <span className="text-indigo-600 dark:text-indigo-400">
+            {currentStep === 1 && '1. Basic Info'}
+            {currentStep === 2 && '2. Dates & Deadlines'}
+            {currentStep === 3 && '3. Venue & Pin'}
+            {currentStep === 4 && '4. Capacity & Launch'}
+          </span>
+        </div>
+        <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+          <div
+            className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+            style={{ width: `${(currentStep / 4) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Desktop / Tablet Multi-step Progress Bar */}
+      <div className="hidden sm:grid sm:grid-cols-4 gap-2 text-center text-xs font-bold">
+        <button
+          type="button"
+          onClick={() => setCurrentStep(1)}
+          className={`p-3 rounded-xl border transition-all text-left sm:text-center ${
+            currentStep === 1
+              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+              : currentStep > 1
+              ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-transparent'
           }`}
         >
           1. Basic Info
-        </div>
-        <div
-          className={`p-3 rounded-xl border transition-all ${
-            currentStep >= 2
-              ? 'bg-indigo-600 text-white border-indigo-600'
+        </button>
+        <button
+          type="button"
+          onClick={() => setCurrentStep(2)}
+          className={`p-3 rounded-xl border transition-all text-left sm:text-center ${
+            currentStep === 2
+              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+              : currentStep > 2
+              ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-transparent'
           }`}
         >
           2. Dates & Deadlines
-        </div>
-        <div
-          className={`p-3 rounded-xl border transition-all ${
-            currentStep >= 3
-              ? 'bg-indigo-600 text-white border-indigo-600'
+        </button>
+        <button
+          type="button"
+          onClick={() => setCurrentStep(3)}
+          className={`p-3 rounded-xl border transition-all text-left sm:text-center ${
+            currentStep === 3
+              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+              : currentStep > 3
+              ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-transparent'
           }`}
         >
           3. Venue & Leaflet Pin
-        </div>
-        <div
-          className={`p-3 rounded-xl border transition-all ${
-            currentStep >= 4
-              ? 'bg-indigo-600 text-white border-indigo-600'
+        </button>
+        <button
+          type="button"
+          onClick={() => setCurrentStep(4)}
+          className={`p-3 rounded-xl border transition-all text-left sm:text-center ${
+            currentStep === 4
+              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-transparent'
           }`}
         >
           4. Capacity & Launch
-        </div>
+        </button>
       </div>
 
       {error && (
         <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-xs">
           {error}
+        </div>
+      )}
+
+      {successMsg && (
+        <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+          <Check className="w-4 h-4" />
+          {successMsg}
         </div>
       )}
 
@@ -211,6 +363,17 @@ export const CreateEditEventPage: React.FC = () => {
                   className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"
                 />
               </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Tags (comma-separated)</label>
+              <input
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="AI, Machine Learning, Python, Networking"
+                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"
+              />
             </div>
 
             <div className="space-y-1.5">
@@ -416,7 +579,7 @@ export const CreateEditEventPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setCurrentStep((prev) => prev - 1)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -453,7 +616,13 @@ export const CreateEditEventPage: React.FC = () => {
               className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold shadow-md transition-all flex items-center gap-1.5"
             >
               <Check className="w-4 h-4" />
-              {loading ? 'Publishing Event...' : 'Publish Event Now'}
+              {loading
+                ? isEditMode
+                  ? 'Saving Changes...'
+                  : 'Publishing Event...'
+                : isEditMode
+                ? 'Save Event Changes'
+                : 'Publish Event Now'}
             </button>
           )}
         </div>
